@@ -24,7 +24,6 @@ def main():
                     print(addr)
                 else:
                     if data := connection.recv(1024):
-                        print(data.decode())
                         for Player in Players:
                             Player.sendall(data)
 

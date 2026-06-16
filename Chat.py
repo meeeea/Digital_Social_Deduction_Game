@@ -7,7 +7,7 @@ PANEL_COLOR = (50, 50, 50)
 class Chat:
     def __init__(self, x, y, w, h):
         self.rect = pygame.Rect(x, y, w, h) # (x, y, width, height)
-        self.lines = [f"This is log message number {i}" for i in range(1, 5)]
+        self.lines = []
         self.line_height = FONT.get_linesize()
         self.text_surface = pygame.Surface((self.rect.width, len(self.lines) * self.line_height), pygame.SRCALPHA)
         
@@ -21,9 +21,8 @@ class Chat:
 
 
     def Add(self, line, color):
-        print(line)
         self.lines.append(line)
-        text_obj = FONT.render(line, True, (255, 255, 255))
+        text_obj = FONT.render(line, True, color)
         
         temp = pygame.Surface((self.rect.width, len(self.lines) * self.line_height), pygame.SRCALPHA)
         temp.blit(self.text_surface, (0,0))
@@ -31,6 +30,8 @@ class Chat:
         
         self.text_surface = temp
         
+        if self.scroll_y == self.max_scroll:
+            self.scroll_y += self.line_height
         self.max_scroll = max(0, self.text_surface.get_height() - self.rect.height)
 
 
