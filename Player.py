@@ -1,6 +1,6 @@
 ﻿import socket
-from TextBox import InputBox
-from Chat import Chat
+from GUI.TextBox import InputBox
+from GUI.Chat import Chat
 from select import select
 
 import pygame
