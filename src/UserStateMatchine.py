@@ -5,10 +5,10 @@ from src.gui.TextBox import InputBox
 from src.gui.Chat import Chat
 from src.gui.Timer import Timer
 
-from src.userstates.Day import Day
-from src.userstates.Lobby import Lobby
-from src.userstates.Night import Night
-from src.userstates.UserState import State
+from src.states.userstates.Day import Day
+from src.states.userstates.Lobby import Lobby
+from src.states.userstates.Night import Night
+from src.states.userstates.UserState import State
 
 class UserStateMatchine:
 
