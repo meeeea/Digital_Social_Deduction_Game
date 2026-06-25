@@ -1,4 +1,5 @@
 ﻿import socket
+from datetime import datetime
 from select import select
 
 import pygame
@@ -15,22 +16,44 @@ def main():
 
         SERVER_ON = True
         Players = []
+        
+        time = datetime.now()
+
+        end_time = int(time.timestamp()) + 10
+
+        send_time = True
+
         while SERVER_ON:
-            read, [], [] = select(Players + [Master_Socket], [], [], 0.5)
+            time = datetime.now()
+
+            if (now := int(time.timestamp())) > end_time:
+                end_time = now + 10
+                send_time = True
+
+            read, send, [] = select(Players + [Master_Socket], Players, [], 0.5)
             for connection in read:
                 if connection == Master_Socket:
                     conn, addr = Master_Socket.accept()
                     Players.append(conn)
-                    print(addr)
+                    conn.sendall(f"time {end_time}".encode())
+                    print("Connection Found:", addr)
                 else:
-                    if data := connection.recv(1024):
-                        for Player in Players:
-                            Player.sendall(data)
+                    if d := connection.recv(1024):
+                        data = d.decode().split()
+                        if data[0] == "message":
+                            for Player in Players:
+                                Player.sendall(" ".join(data).encode())
 
                     else:
                         print(f"Lost connection with {connection.getpeername()}")
                         connection.close()
                         Players.remove(connection)
+            if send_time:
+                for player in send:
+                    player.sendall(f"time {end_time}".encode())
+                send_time = False
+
+
 
 
 def get_local_ip():

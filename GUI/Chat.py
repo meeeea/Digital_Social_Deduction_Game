@@ -30,7 +30,7 @@ class Chat:
         
         self.text_surface = temp
         
-        if self.scroll_y == self.max_scroll:
+        if self.scroll_y == self.max_scroll and self.max_scroll > 0:
             self.scroll_y += self.line_height
         self.max_scroll = max(0, self.text_surface.get_height() - self.rect.height)
 
