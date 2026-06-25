@@ -2,8 +2,6 @@
 from datetime import datetime
 from select import select
 
-import pygame
-
 
 def main():
     HOST = "0.0.0.0"                 # Symbolic name meaning all available interfaces

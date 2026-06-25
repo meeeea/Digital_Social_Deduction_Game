@@ -1,7 +1,11 @@
 ﻿import socket
-from GUI.TextBox import InputBox
-from GUI.Chat import Chat
-from GUI.Timer import Timer
+
+from src.gui.TextBox import InputBox
+from src.gui.Chat import Chat
+from src.gui.Timer import Timer
+
+from src.UserStateMatchine import UserStateMatchine
+
 from select import select
 from datetime import datetime
 
@@ -23,12 +27,7 @@ def main():
         FONT = pygame.font.Font(None, 32)
         running = True
 
-        
-
-        # CONTENTS
-        chat_input = InputBox(0, 7 * screen.get_height() / 8, screen.get_width() / 3, screen.get_height() / 8, "", FONT)
-        chat_reception = Chat(0, 0, screen.get_width() / 3, 7 * screen.get_height() / 8)
-        game_timer = Timer(2 * screen.get_width() / 5, 0, screen.get_width() / 5, screen.get_height() / 8)
+        stateMatchine = UserStateMatchine(screen, FONT)
 
         end_time = 0
 
@@ -38,34 +37,27 @@ def main():
             # poll for events
             # pygame.QUIT event means the user clicked X to close your window
             for event in pygame.event.get():
-                chat_reception.Event_Handle(event)
-                if message := chat_input.handle_event(event):
-                    S.sendall(f"message {message}".encode())
+                stateMatchine.Event_Handle(S, event)
                 if event.type == pygame.QUIT:
                     running = False
 
             # fill the screen with a color to wipe away anything from last frame
             screen.fill("white")
  
-            rec, [], [] = select([S], [], [], 0)
-            if len(rec):
+            if rec := select([S], [], [], 0)[0]:
                 data = rec[0].recv(1024).decode().split()
-                if data[0] == "message":
-                    chat_reception.Add(" ".join(data[1:]), pygame.Color("white"))
+                stateMatchine.Rec(data)
                 if data[0] == "time":
                     end_time = int(data[1])
+                
             
             
-            game_timer.set_time(end_time - int(time.timestamp()))
-
+            # UPDATE
+            stateMatchine.Update(end_time, time)
            
 
-            # RENDER YOUR GAME HERE
-            chat_reception.Draw(screen)
-            
-            chat_input.draw(screen)
-
-            game_timer.draw(screen)
+            # RENDER 
+            stateMatchine.draw(screen)
 
             # flip() the display to put your work on screen
             pygame.display.flip()
