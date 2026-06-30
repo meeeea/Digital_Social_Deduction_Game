@@ -1,8 +1,9 @@
-﻿from Class import Class
+﻿from src.classes.Class import Class
 import socket
 
 class Player:
-    def __init__(self, sock : socket.socket, number : int, Player_Class : Class):
+    LobbyClass = Class()
+    def __init__(self, sock : socket.socket, number : int, Player_Class : Class = LobbyClass):
         self.Socket = sock
         self.Number = number
         self.Class  = Player_Class

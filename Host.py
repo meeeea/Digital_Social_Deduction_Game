@@ -2,6 +2,8 @@
 from datetime import datetime
 from select import select
 
+from src.Player import Player
+from src.ServerStateMatchine import StateMatchine
 
 def main():
     HOST = "0.0.0.0"                 # Symbolic name meaning all available interfaces
@@ -14,12 +16,14 @@ def main():
 
         SERVER_ON = True
         Players = []
-        
+
         time = datetime.now()
 
         end_time = int(time.timestamp()) + 10
 
         send_time = True
+
+        player_number = 1
 
         while SERVER_ON:
             time = datetime.now()
@@ -32,15 +36,17 @@ def main():
             for connection in read:
                 if connection == Master_Socket:
                     conn, addr = Master_Socket.accept()
-                    Players.append(conn)
+                    Players.append(Player(conn, player_number))
+
+                    player_number += 1
                     conn.sendall(f"time {end_time}".encode())
                     print("Connection Found:", addr)
                 else:
                     if d := connection.recv(1024):
                         data = d.decode().split()
                         if data[0] == "message":
-                            for Player in Players:
-                                Player.sendall(" ".join(data).encode())
+                            for player in Players:
+                                player.sendall(" ".join(data).encode())
 
                     else:
                         print(f"Lost connection with {connection.getpeername()}")

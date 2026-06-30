@@ -44,11 +44,12 @@ def main():
             # fill the screen with a color to wipe away anything from last frame
             screen.fill("white")
  
-            if rec := select([S], [], [], 0)[0]:
+            if len(rec := select([S], [], [], 0)[0]):
                 data = rec[0].recv(1024).decode().split()
-                stateMatchine.Rec(data)
-                if data[0] == "time":
-                    end_time = int(data[1])
+                if data:
+                    stateMatchine.Rec(data)
+                    if data[0] == "time":
+                        end_time = int(data[1])
                 
             
             
